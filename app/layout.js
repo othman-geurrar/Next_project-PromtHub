@@ -1,5 +1,5 @@
 import { Nav } from "@/components/Nav";
-import Provider from "@/components/ui/provider";
+import Provider from "@/components/ui/Provider";
 
 
 
