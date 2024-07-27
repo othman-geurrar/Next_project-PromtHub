@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@/components/Form";
 
@@ -8,9 +8,10 @@ const EditePrompt = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const promptId = searchParams.get("id");
+  
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Optional: For better UX
 
   useEffect(() => {
     const getPromptDetails = async () => {
@@ -21,10 +22,10 @@ const EditePrompt = () => {
         const data = await response.json();
         console.log({ editdata: data });
         setPost(data);
-        setLoading(false);
       } catch (error) {
         console.log(error);
-        setLoading(false);
+      } finally {
+        setLoading(false); // Ensure loading state is cleared after fetch
       }
     };
     
@@ -51,6 +52,8 @@ const EditePrompt = () => {
 
       if (response.ok) {
         router.push("/");
+      } else {
+        console.log('Failed to update prompt'); // Optional: Handle non-200 responses
       }
     } catch (error) {
       console.log(error);
@@ -59,11 +62,11 @@ const EditePrompt = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div>Loading...</div>; // Optional: Add a loading state for better UX
 
   return (
     <Form
-      type="Edit"
+      type="Edit" // Ensure this matches the Form component's expected prop
       post={post}
       setPost={setPost}
       submitting={submitting}
@@ -72,10 +75,4 @@ const EditePrompt = () => {
   );
 };
 
-const EditePromptWithSuspense = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <EditePrompt />
-  </Suspense>
-);
-
-export default EditePromptWithSuspense;
+export default EditePrompt;
