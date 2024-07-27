@@ -11,9 +11,22 @@ const EditePrompt = () => {
   const [submitting, setIsSubmitting] = useState(false);
   const [post, setPost] = useState({ prompt: "", tag: "" });
 
-    async function editePrompt(e) {
+  useEffect(() => {
+    const getPromptDetails = async () => {
+      const response = await fetch(`/api/prompt/${promptId}`);
+      const data = await response.json();
+      console.log({editdata: data});
+      setPost(data);
+    };
+    if (promptId) getPromptDetails();
+  }, [promptId]);
+
+
+
+   const editePrompt= async(e) =>{
       e.preventDefault();
       setIsSubmitting(true);
+
       if (!promptId) return alert("Missing PromptId!");
 
       try {
@@ -30,10 +43,8 @@ const EditePrompt = () => {
 
         if (response.ok) {
           router.push("/");
-        } else {
-          const errorData = await response.json();
-          console.error("Error:", errorData.message);
-        }
+        } 
+        
       } catch (error) {
         console.log(error);
       } finally {
@@ -41,15 +52,7 @@ const EditePrompt = () => {
       }
     }
 
-  useEffect(() => {
-    const getPromptDetails = async () => {
-      const response = await fetch(`/api/prompt/${promptId}`);
-      const data = await response.json();
-      console.log({editdata: data});
-      setPost(data);
-    };
-    if (promptId) getPromptDetails();
-  }, [promptId]);
+ 
 
   return (
     <Form
